@@ -15,16 +15,19 @@ const MELEE=[stats.fighter,stats.lord,stats.valkyrie,stats.samurai,stats.ninja,s
 const SUPPORT=[stats.ranger,stats.samurai,stats.ninja,stats.monk,stats.bard,stats.gadgeteer,stats.priest,stats.alchemist,stats.bishop,stats.psionic,stats.mage]
 const ROLES=[HEALER,TANK,BNE]
 const OPTIONALROLES=[CASTER]
+const SEXES=[true,false]
 
 class Hero{
-  constructor(race,profession=false){
+  constructor(male,race,profession=false){
+    this.male=male
     this.race=race
     this.profession=profession
   }
   
   toString(){
     let p=this.profession?this.profession.name:'?'
-    return `${this.race} ${p.toLowerCase()}`
+    let sex=this.male?'♂':'♀'
+    return `${sex} ${this.race.name} ${p.toLowerCase()}`
   }
   
   compare(hero){
@@ -72,8 +75,10 @@ class Party{
   }
   
   make(){
-    this.heroes=rpg.shuffle(stats.races).map(r=>new Hero(r))
-    for(let h of Array.from(this.heroes)){
+    this.heroes=[]
+    for(let s of SEXES)
+      this.heroes.push(...stats.races.map(r=>new Hero(s,r)))
+    for(let h of rpg.shuffle(this.heroes)){
       let favored=h.race.favor()
       favored=favored.filter(f=>this.heroes.map(h=>h.profession).indexOf(f)<0)
       if(favored.length>0) h.profession=rpg.pick(favored)
