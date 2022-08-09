@@ -4,7 +4,16 @@
 <meta name='viewport' content='width=device-width,initial-scale=1'>
 <link rel='stylesheet' href='style.css' >
 
+<ol id='party'></ol>
+
 <script type='module'>
   import * as party from './script/party.js'
-  party.make()
+  
+  let heroes=party.make().heroes
+  //console.log(heroes)
+  for(let h of heroes){
+    let li=document.createElement('li')
+    li.textContent=h.toString()
+    document.querySelector('#party').appendChild(li)
+  }
 </script>
