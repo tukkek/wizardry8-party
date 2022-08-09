@@ -1,13 +1,13 @@
 import * as stats from './stats.js'
 import * as rpg from './rpg.js'
 
-const MAGIC={
-  'mental':[stats.psionic,stats.monk,stats.bishop,],
-  'water':[stats.alchemist,stats.bishop,],
-  'divine':[stats.priest,stats.valkyrie,stats.bishop,],
-  'fire':[stats.mage,stats.samurai,stats.bishop,],
+const REALMS={
+  'psionics':[stats.psionic,stats.monk,stats.bishop,],
+  'alchemy':[stats.alchemist,stats.bishop,],
+  'divinity':[stats.priest,stats.valkyrie,stats.bishop],
+  'wizardry':[stats.mage,stats.samurai,stats.bishop,],
 }
-const HEALER=[...new Set(['water','divine','mental'].flatMap(m=>MAGIC[m]))]
+const HEALER=[...new Set(['alchemy','divinity','psionics'].flatMap(m=>REALMS[m]))]
 const BNE=[stats.ninja,stats.rogue,stats.bard,stats.gadgeteer]
 const TANK=[stats.fighter,stats.lord,stats.valkyrie,stats.samurai,stats.monk,stats.bard,stats.priest,stats.rogue]
 const CASTER=[stats.bishop,stats.mage,stats.samurai,stats.monk,stats.gadgeteer,stats.bard]
@@ -22,12 +22,16 @@ class Hero{
     this.male=male
     this.race=race
     this.profession=profession
+    this.realms=[]
   }
   
   toString(){
     let p=this.profession?this.profession.name:'?'
     let sex=this.male?'♂':'♀'
-    return `${sex} ${this.race.name} ${p.toLowerCase()}`
+    let s=`${sex} ${this.race.name} ${p.toLowerCase()}`
+    if(this.realms.length>1)
+      s+=` (${this.realms.join(', ')})`
+    return s
   }
   
   compare(hero){
@@ -35,6 +39,13 @@ class Hero{
     let b=MELEE.indexOf(hero.profession)>=0
     if(a==b) return 0
     return a&&!b?-1:+1
+  }
+  
+  setup(){
+    let realms=Object.keys(REALMS)
+    this.realms=realms.filter(r=>REALMS[r].indexOf(this.profession)>=0)
+    if(this.realms.length>1)
+      this.realms=rpg.shuffle(this.realms).slice(0,2).sort()
   }
 }
 
@@ -71,6 +82,7 @@ class Party{
         this.races.splice(i,1)
       }*/
     rpg.shuffle(this.heroes).sort((a,b)=>a.compare(b))
+    for(let h of this.heroes) h.setup()
     return true
   }
   
