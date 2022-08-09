@@ -37,10 +37,11 @@ class Race extends Stats{
       if(strict) return false
       else met-=1
     }
-    return strict?true:met>=6
+    return strict?true:met>=5
   }
   
   favor(){
+    if(this==human) return uncommon
     var favored=professions.filter(p=>this.meet(p))
     if(favored.length>0) return favored
     return professions.filter(p=>this.meet(p,false))
@@ -77,6 +78,8 @@ export var rawulf=new Race('Rawulf',40,30,55,50,40,40,50)
 
 export var professions=[fighter,lord,valkyrie,ranger,samurai,ninja,monk,rogue,gadgeteer,bard,priest,alchemist,bishop,psionic,mage]
 export var races=[human,dracon,dwarf,elf,faerie,felpurr,gnome,hobbit,lizardman,mook,rawulf]
+
+var uncommon=[lord,valkyrie,gadgeteer,ranger,samurai,ninja,monk,bard,bishop]
 
 export function test(){
   console.log('#professions: '+professions.length)

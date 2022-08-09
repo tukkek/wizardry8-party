@@ -13,3 +13,5 @@ export function shuffle(array,clone=false){
 }
 
 export function pick(array){return array[roll(0,array.length-1)]}
+
+export function chancein(n){return roll(1,n)==1}

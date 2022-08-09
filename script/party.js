@@ -70,15 +70,19 @@ class Party{
         this.professions.splice(i,1)
         this.races.splice(i,1)
       }*/
-    this.heroes.sort((a,b)=>a.compare(b))
+    rpg.shuffle(this.heroes).sort((a,b)=>a.compare(b))
     return true
   }
   
   make(){
-    this.heroes=[]
-    for(let s of SEXES)
-      this.heroes.push(...stats.races.map(r=>new Hero(s,r)))
-    for(let h of rpg.shuffle(this.heroes)){
+    this.heroes=[]//SEXES.map(s=>new Hero(s,stats.human))
+    let nonhuman=stats.races.filter(r=>r!=stats.human)
+    this.heroes.push(...nonhuman.map(r=>new Hero(true,r)))
+    this.heroes.push(...nonhuman.map(r=>new Hero(false,r)))
+    for(let i=0;i<nonhuman.length;i++) this.heroes.push(new Hero(i%2==0,stats.human))
+    rpg.shuffle(this.heroes)
+    //this.heroes.push(...[new Hero(true,stats.human),new Hero(false,stats.human)])
+    for(let h of this.heroes){
       let favored=h.race.favor()
       favored=favored.filter(f=>this.heroes.map(h=>h.profession).indexOf(f)<0)
       if(favored.length>0) h.profession=rpg.pick(favored)
